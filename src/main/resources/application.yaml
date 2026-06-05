@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: demo # 애플리 케이션 이름
+  profiles:
+    active: dev # 활성화할 프로파일 (application-dev.yml 사용)
+  config:
+    import: optional:file:.env[.properties] # .env 파일에서 환경변수 가져오기
+  mustache:
+    servlet:
+      expose-session-attributes: false # 세션 데이터 머스테치에 자동 노출 여부
+      expose-request-attribures: true # 요청 데이터 머스테치에 자동 노출여부
+#  security:
+#    oauth2:
+#      client: # 소셜로그인 설정
+#    registration:
+#      google:
+#        client-id: ${GOOGLE_CLIENT_ID}
+#        client-secret: ${GOOGLE_CLIENT_SECRET}
+#        scope: email, profile # 가져올 구글 사용자 정보 범위
+server:
+  port: 8080 # 서버포트
+  servlet:
+    session:
+      tracking-modes: cookie #세션 추적 방식 (쿠키 사용)
+    encoding:
+      charset: utf-8 # 인코딩 설정
+      force: true # 강제 적용
+    multipart:
+      enabled: true # 파일 업로드 활성화
+      max-file-size: 10MB # 파일 최대 크기
+      max-request-size: 20MB # 요청 최대 크기

@@ -1,0 +1,42 @@
+spring:
+  config:
+    import: optional:file:.env[.properties] # .env 파일에서 환경변수 가져오기
+  mail:
+    host: smtp.gmail.com # 메일 서버 주소
+    port: 587 #메일 서버 포트
+    username: ${MAIL_USERNAME} # 메일 계정
+    password: ${MAIL_PASSWORD} # 메일 비밀번호
+    properties:
+      mail:
+        smtp:
+          auth: true # SMTP 인증 사용
+          starttls:
+            enable: true # TLS 암호화 사용
+            required: true # TLS 필수
+          connectiontimeout: 5000 # 연결 타임아웃 5초
+          timeout: 5000 # 응답 타임아웃 5초
+          writetimeout: 5000 # 쓰기 타임아웃 5초
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL 드라이버
+    url: jdbc:mysql://localhost:3306/firstCloneCoding?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false # DB 연결 URL
+    username: ${DB_USERNAME} # DB 계정
+    password: ${DB_PASSWORD} # DB 비밀번호
+
+
+  jpa:
+    open-in-view: false # OSIV 비활성화 (성능 최적화)
+    hibernate:
+      ddl-auto: create # 서버 실행시 테이블 새로 생성
+    show-sql: true # SQL 로그 출력
+    properties:
+      hibernate:
+        format_sql: true # 보기 좋게 포맷
+        default_batch_fetch_size: 100 # N + 1 문제 최적화
+    defer-datasource-initialization: true # JPA 테이블 생성 후 data.sql 실행
+
+  sql:
+    init:
+      mode: always # 매번 data.sql 실행
+      data-locations:
+        - classpath:db/data.sql # 샘플 데이터 파일 경로
