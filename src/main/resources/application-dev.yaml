@@ -1,6 +1,6 @@
 spring:
-  config:
-    import: optional:file:.env[.properties] # .env 파일에서 환경변수 가져오기
+#  config:
+#    import: optional:file:.env[.properties] # .env 파일에서 환경변수 가져오기
   mail:
     host: smtp.gmail.com # 메일 서버 주소
     port: 587 #메일 서버 포트
