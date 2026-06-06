@@ -1,4 +1,4 @@
 package FirstCloneCoding.demo.core.intercepter;
 
-public class AdminIntercepter {
+public class AdminInterceptor {
 }
