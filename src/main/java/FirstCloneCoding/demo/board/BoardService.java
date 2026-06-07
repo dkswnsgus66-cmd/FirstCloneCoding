@@ -93,7 +93,7 @@ public class BoardService {
     @Transactional
     public void delete(Long memberId, Long boardId) {
 
-        Board boardEntity = boardRepository.findByIdWithMember(boardId).orElseThrow(() ->
+        Board boardEntity = boardRepository.findById(boardId).orElseThrow(() ->
                 new IllegalArgumentException("해당 게시글을 찾을수 없습니다.")
         );
 
