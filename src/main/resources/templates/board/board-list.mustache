@@ -1,0 +1,214 @@
+{{> layout/header}}
+
+<style>
+    /* ── BOARD ── */
+    .page-header { background: #fff; border-bottom: 1px solid #eaecf4; padding: 40px 28px 0; }
+    .page-header-inner { max-width: 1140px; margin: 0 auto; }
+    .page-title { font-size: 26px; font-weight: 900; color: #1c1e26; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .page-desc { font-size: 14px; color: #9ca3af; font-weight: 400; margin-bottom: 28px; }
+    .board-tabs { display: flex; gap: 0; }
+    .board-tab { padding: 12px 24px; font-size: 14px; font-weight: 700; color: #9ca3af; border-bottom: 3px solid transparent; cursor: pointer; transition: all .15s; display: inline-block; }
+    .board-tab:hover { color: #1c1e26; }
+    .board-tab.active { color: #2563eb; border-bottom-color: #2563eb; }
+    .board-section { padding: 36px 28px 80px; }
+    .board-inner { max-width: 1140px; margin: 0 auto; }
+    .board-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .board-count { font-size: 14px; color: #9ca3af; font-weight: 500; }
+    .board-count strong { color: #1c1e26; font-weight: 700; }
+    .board-search { display: flex; gap: 8px; margin-bottom: 20px; }
+    .board-search-input { flex: 1; padding: 11px 16px; background: #fff; border: 1.5px solid #e2e5ef; border-radius: 9px; font-size: 14px; font-family: inherit; color: #1c1e26; outline: none; transition: border-color .15s; }
+    .board-search-input::placeholder { color: #c4c9d9; }
+    .board-search-input:focus { border-color: #2563eb; }
+    .board-search-btn { padding: 11px 22px; background: #2563eb; color: #fff; border: none; border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .board-search-btn:hover { background: #1d4ed8; }
+    .btn-sm { padding: 8px 16px; font-size: 13px; border-radius: 7px; }
+    .board-table { width: 100%; background: #fff; border-radius: 14px; border: 1.5px solid #eaecf4; overflow: hidden; margin-bottom: 28px; }
+    .board-table-head { display: grid; padding: 13px 24px; background: #f8f9fc; border-bottom: 1px solid #eaecf4; font-size: 12px; font-weight: 700; color: #9ca3af; letter-spacing: .3px; }
+    .board-table-row { display: grid; padding: 16px 24px; border-bottom: 1px solid #f3f4f8; align-items: center; transition: background .12s; cursor: pointer; text-decoration: none; color: inherit; }
+    .board-table-row:last-child { border-bottom: none; }
+    .board-table-row:hover { background: #f8f9ff; }
+    .col-free { grid-template-columns: 60px 1fr 100px 100px 60px; gap: 12px; }
+    .col-inquiry { grid-template-columns: 60px 1fr 100px 100px 80px; gap: 12px; }
+    .cell-num { font-size: 13px; color: #c4c9d9; font-weight: 500; text-align: center; }
+    .cell-title { font-size: 14px; font-weight: 600; color: #1c1e26; display: flex; align-items: center; gap: 8px; }
+    .cell-title .new-badge { font-size: 10px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 1px 7px; border-radius: 5px; font-weight: 700; flex-shrink: 0; }
+    .cell-title .notice-badge { font-size: 10px; background: #fef3c7; color: #b45309; border: 1px solid #fde68a; padding: 1px 7px; border-radius: 5px; font-weight: 700; flex-shrink: 0; }
+    .cell-author { font-size: 13px; color: #6b7280; font-weight: 500; }
+    .cell-date { font-size: 12px; color: #c4c9d9; font-weight: 400; }
+    .cell-view { font-size: 12px; color: #c4c9d9; text-align: center; }
+    .cell-status { text-align: center; }
+    .status-wait { font-size: 11px; background: #f3f4f8; color: #9ca3af; padding: 3px 10px; border-radius: 20px; font-weight: 700; display: inline-block; }
+    .status-done { font-size: 11px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 3px 10px; border-radius: 20px; font-weight: 700; display: inline-block; }
+    .board-table-row.pinned { background: #f8f9ff; }
+    .board-table-row.pinned .cell-num { color: #2563eb; font-weight: 700; }
+    .empty-state { text-align: center; padding: 60px 0; }
+    .empty-msg { font-size: 15px; color: #c4c9d9; }
+</style>
+
+<!-- 페이지 헤더 + 탭 -->
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1 class="page-title">게시판</h1>
+        <p class="page-desc">자유롭게 소통하고 궁금한 점을 문의하세요.</p>
+        <div class="board-tabs">
+            <a href="/boards?boardType=FREE" class="board-tab {{#isFree}}active{{/isFree}}">자유게시판</a>
+            <a href="/boards?boardType=NOTICE" class="board-tab {{#isNotice}}active{{/isNotice}}">공지사항</a>
+            <a href="/boards?boardType=INQUIRY" class="board-tab {{#isInquiry}}active{{/isInquiry}}">1:1 문의</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- ===================================================
+     자유게시판 (type=FREE)
+     컨트롤러 : isFree = true, boards = 게시글 리스트
+=================================================== -->
+{{#isFree}}
+    <section class="board-section">
+        <div class="board-inner">
+
+            <div class="board-action">
+                <span class="board-count">총 <strong>{{boardCount}}</strong>의 게시글</span>
+                <a href="/boards/save?boardType=FREE" class="btn btn-primary btn-sm">글쓰기</a>
+            </div>
+
+            <form action="/boards" method="GET">
+                <input type="hidden" name="boardType" value="{{#isFree}}FREE{{/isFree}}{{#isNotice}}NOTICE{{/isNotice}}{{#isInquiry}}INQUIRY{{/isInquiry}}" />
+                <div class="board-search">
+                    <input type="text" name="keyword" class="board-search-input" placeholder="검색어를 입력하세요..." value="{{keyword}}" />
+                    <button type="submit" class="board-search-btn">검색</button>
+                </div>
+            </form>
+
+            {{#boards}}
+                <div class="board-table">
+                    <a href="/boards/{{id}}" class="board-table-row pinned col-free">
+                        <span class="cell-num">📌</span>
+                        <span class="cell-title">{{title}}</span>
+                        <span class="cell-author">{{memberName}}</span>
+                        <span class="cell-date">{{createdAt}}</span>
+                        <span class="cell-view">{{viewCount}}</span>
+                    </a>
+                </div>
+            {{/boards}}
+
+            {{! 게시글 없을 때 }}
+            {{^boards}}
+                <div class="empty-state">
+                    <p class="empty-msg">등록된 게시글이 없습니다.</p>
+                </div>
+            {{/boards}}
+
+        </div>
+
+        <div class="paging">
+            {{#prevPage}}<a href="/boards?boardType={{boardType}}&keyword={{keyword}}&page={{prevPage}}" class="page-btn">이전</a>{{/prevPage}}
+            {{#pageList}}
+                <a href="/boards?boardType={{boardType}}&keyword={{keyword}}&page={{num}}" class="page-btn {{#isCurrent}}active{{/isCurrent}}">{{num}}</a>
+            {{/pageList}}
+            {{#nextPage}}<a href="/boards?boardType={{boardType}}&keyword={{keyword}}&page={{nextPage}}" class="page-btn">다음</a>{{/nextPage}}
+        </div>
+
+        </div>
+    </section>
+{{/isFree}}
+
+<!-- ===================================================
+     공지사항 (type=NOTICE)
+     컨트롤러 : isNotice = true, boards = 공지 리스트
+=================================================== -->
+{{#isNotice}}
+    <section class="board-section">
+        <div class="board-inner">
+
+            <div class="board-action">
+                <span class="board-count">총 <strong>{{boardCount}}</strong>의 공지</span>
+                {{#isAdmin}}
+                    <a href="/boards/save?boardType=NOTICE" class="btn btn-primary btn-sm">공지 작성</a>
+                {{/isAdmin}}
+
+            </div>
+
+            <div class="board-search">
+                <input type="text" class="board-search-input" placeholder="검색어를 입력하세요..."/>
+                <button class="board-search-btn">검색</button>
+            </div>
+
+            {{! 공지 있을 때 — 하드코딩 데이터 }}
+            {{#boards}}
+                <div class="board-table">
+                    <a href="/boards/{{id}}" class="board-table-row pinned col-free">
+                        <span class="cell-num">📌</span>
+                        <span class="cell-title">{{title}}</span>
+                        <span class="cell-author">{{memberName}}</span>
+                        <span class="cell-date">{{createdAt}}</span>
+                        <span class="cell-view">{{viewCount}}</span>
+                    </a>
+                </div>
+            {{/boards}}
+
+            {{! 공지 없을 때 }}
+            {{^boards}}
+                <div class="empty-state">
+                    <p class="empty-msg">등록된 공지사항이 없습니다.</p>
+                </div>
+            {{/boards}}
+
+        </div>
+
+        <div class="paging">
+            {{#prevPage}}<a href="/boards?boardType={{boardType}}&keyword={{keyword}}&page={{prevPage}}" class="page-btn">이전</a>{{/prevPage}}
+            {{#pageList}}
+                <a href="/boards?boardType={{boardType}}&keyword={{keyword}}&page={{num}}" class="page-btn {{#isCurrent}}active{{/isCurrent}}">{{num}}</a>
+            {{/pageList}}
+            {{#nextPage}}<a href="/boards?boardType={{boardType}}&keyword={{keyword}}&page={{nextPage}}" class="page-btn">다음</a>{{/nextPage}}
+        </div>
+
+        </div>
+    </section>
+{{/isNotice}}
+
+<!-- ===================================================
+     1:1 문의 (type=INQUIRY)
+     컨트롤러 : isInquiry = true → /boards/inquiry-form 으로 redirect
+=================================================== -->
+{{#isInquiry}}
+    <section class="board-section">
+        <div class="board-inner">
+
+            <div class="board-action">
+                <span class="board-count">총 <strong>{{boardCount}}</strong>의 문의</span>
+                <a href="/boards/save?boardType=INQUIRY" class="btn btn-primary btn-sm">문의하기</a>
+            </div>
+
+            {{#boards}}
+                <div class="board-table">
+                    <a href="/boards/{{id}}" class="board-table-row pinned col-free">
+                        <span class="cell-num">📌</span>
+                        <span class="cell-title">{{title}}</span>
+                        <span class="cell-author">{{memberName}}</span>
+                        <span class="cell-date">{{createdAt}}</span>
+                        <span class="cell-view">{{viewCount}}</span>
+                    </a>
+                </div>
+            {{/boards}}
+
+            {{^boards}}
+                <div class="empty-state">
+                    <p class="empty-msg">등록된 문의가 없습니다.</p>
+                </div>
+            {{/boards}}
+
+            <div class="paging">
+                {{#prevPage}}<a href="/boards?boardType={{boardType}}&keyword={{keyword}}&page={{prevPage}}" class="page-btn">이전</a>{{/prevPage}}
+                {{#pageList}}
+                    <a href="/boards?boardType={{boardType}}&keyword={{keyword}}&page={{num}}" class="page-btn {{#isCurrent}}active{{/isCurrent}}">{{num}}</a>
+                {{/pageList}}
+                {{#nextPage}}<a href="/boards?boardType={{boardType}}&keyword={{keyword}}&page={{nextPage}}" class="page-btn">다음</a>{{/nextPage}}
+            </div>
+
+        </div>
+    </section>
+{{/isInquiry}}
+
+{{> layout/footer}}
