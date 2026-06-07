@@ -4,12 +4,14 @@ package FirstCloneCoding.demo.board;
 import FirstCloneCoding.demo.member.Member;
 import FirstCloneCoding.demo.member.MemberRepository;
 import FirstCloneCoding.demo.member.MemberService;
+import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-
+    private final MemberRepository memberRepository;
 
 
     // 제목 검색 기능
@@ -33,7 +35,7 @@ public class BoardService {
         return boardRepository.findByMyBoard(memberId);
     }
 
-     // 나중에 추가
+    // 나중에 추가
 //    public void increaseViewCount(Long boardId) {
 //
 //
@@ -42,12 +44,62 @@ public class BoardService {
 
     public BoardResponse.DetailDTO detailBoard(Long boardId) {
 
-        Board boardEntity =  boardRepository.findById(boardId).orElseThrow(() ->
-                    new IllegalArgumentException("게시글을 찾을수 없습니다.")
-                );
+        Board boardEntity = boardRepository.findById(boardId).orElseThrow(() ->
+                new IllegalArgumentException("게시글을 찾을수 없습니다.")
+        );
 
         return new BoardResponse.DetailDTO(boardEntity);
 
+
+    }
+
+    // 게시글 저장
+    @Transactional
+    public void boardSave(Member member, BoardRequest.SaveDTO saveDTO) {
+
+        Member memberEntity = memberRepository.findById(member.getId()).orElseThrow(() ->
+                new IllegalArgumentException("회원을 찾을수 없습니다.")
+        );
+
+        // 나중에 보드 출력할때 멤버 이름도 출력해야 하기에 member 정보도 넣음
+        Board boardEntity = saveDTO.toEntity(memberEntity);
+
+        boardRepository.save(boardEntity);
+
+    }
+
+
+    @Transactional
+    public BoardResponse.UpdateDTO updatePage(Long boardId) {
+
+        Board boardEntity = boardRepository.findById(boardId).orElseThrow(() ->
+                new IllegalArgumentException("해당 게시글을 찾을수 없습니다.")
+        );
+
+        return new BoardResponse.UpdateDTO(boardEntity);
+    }
+
+    @Transactional
+    public void update(Long boardId, BoardRequest.UpdateDTO updateDTO) {
+
+        Board boardEntity = boardRepository.findById(boardId).orElseThrow(() ->
+                new IllegalArgumentException("해당 게시글을 찾을수 없습니다.")
+        );
+        updateDTO.validate();
+        updateDTO.update(boardEntity);
+
+    }
+
+    @Transactional
+    public void delete(Long memberId, Long boardId) {
+
+        Board boardEntity = boardRepository.findByIdWithMember(boardId).orElseThrow(() ->
+                new IllegalArgumentException("해당 게시글을 찾을수 없습니다.")
+        );
+
+        if (boardEntity.getMember().getId() == memberId) {
+            boardEntity.delete();
+        }
 
     }
 }

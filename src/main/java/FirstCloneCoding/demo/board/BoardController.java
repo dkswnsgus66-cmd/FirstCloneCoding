@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -64,7 +65,80 @@ public class BoardController {
         return "board/board-detail";
     }
 
+    // 글쓰기 화면
+    @GetMapping("/boards/save")
+    public String boardSavePage(@RequestParam(name = "boardType") String boardType , Model model , HttpSession session){
+
+        Member member = (Member) session.getAttribute(Define.SESSION_USER);
+
+        // 공지사랑 작성은 관리자 ROLE 만 허용
+        if(boardType.equalsIgnoreCase("NOTICE")){
+            if (member == null || member.getRole() != Role.ADMIN) {
+                throw new RuntimeException("공지 작성 권한이 없습니다");
+            }
+        }
+
+        // 자유나 문의는 로그인만
+        if(boardType.equalsIgnoreCase("FREE") || boardType.equalsIgnoreCase("INQUIRY")){
+            if(member == null){ // 로그인 안되어 있으면 다시 로그인 화면
+                return "redirect:/login-form";
+            }
+        }
+        model.addAttribute("boardType",boardType);
+        model.addAttribute("isFree",boardType.equalsIgnoreCase("FREE"));
+        model.addAttribute("isNotice",boardType.equalsIgnoreCase("NOTICE"));
+        model.addAttribute("isInquiry",boardType.equalsIgnoreCase("INQUIRY"));
+
+        return "board/board-save";
+
+    }
+
+    // 글쓰기 기능
+    @PostMapping("/boards/save")
+    public String boardSave(BoardRequest.SaveDTO saveDTO , HttpSession session) {
+
+        Member member = (Member) session.getAttribute(Define.SESSION_USER);
+
+        saveDTO.validate();
+
+        boardService.boardSave(member,saveDTO);
+
+        return "redirect:/boards";
+
+    }
+
+    // 업데이트 화면
+    @GetMapping("/boards/{boardId}/edit")
+    public String boardUpdatePage(@PathVariable(name = "boardId") Long boardId, Model model) {
+
+        BoardResponse.UpdateDTO board = boardService.updatePage(boardId);
+
+        model.addAttribute("isFree",board.getBoardType().name().equalsIgnoreCase("FREE"));
+        model.addAttribute("isNotice",board.getBoardType().name().equalsIgnoreCase("NOTICE"));
+        model.addAttribute("board",board);
+
+        return "board/board-update";
+    }
 
 
+    // 업데이트 기능
+    @PostMapping("/boards/{boardId}/edit")
+    public String boardUpdate (@PathVariable(name = "boardId") Long boardId,BoardRequest.UpdateDTO updateDTO) {
+
+        boardService.update(boardId,updateDTO);
+        return "redirect:/boards";
+
+    }
+
+    // 삭제 기능
+    @PostMapping("/boards/{boardId}/delete")
+    public String boardDelete (@PathVariable(name = "boardId") Long boardId,HttpSession session){
+
+        Member member = (Member) session.getAttribute(Define.SESSION_USER);
+
+        boardService.delete(member.getId(),boardId);
+
+        return "redirect:/boards";
+    }
 
 }

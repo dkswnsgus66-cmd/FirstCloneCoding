@@ -47,4 +47,9 @@ public class Board {
         this.member = member;
         this.boardType = boardType;
     }
+
+
+    public void delete() {
+        this.isActive = false;
+    }
 }

@@ -33,7 +33,7 @@ public class BoardResponse {
     @Data
 
     public static class DetailDTO {
-
+        private Long id;
         private BoardType boardType;
         private String title;
         private String memberName;
@@ -43,6 +43,7 @@ public class BoardResponse {
         private Long memberId;
 
         public DetailDTO(Board board) {
+            this.id = board.getId();
             this.boardType = board.getBoardType();
             this.title = board.getTitle();
             this.memberName = board.getMember().getName();
@@ -50,6 +51,22 @@ public class BoardResponse {
             this.viewCount = board.getViewCount();
             this.content = board.getContent();
             this.memberId = board.getMember().getId();
+        }
+    }
+
+    @Data
+    public static class UpdateDTO {
+
+        private Long id;
+        private String title;
+        private String content;
+        private BoardType boardType;
+
+        public UpdateDTO(Board board) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+            this.content = board.getContent();
+            this.boardType = board.getBoardType();
         }
     }
 }

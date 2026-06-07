@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository <Board, Long> {
 
@@ -33,5 +34,11 @@ public interface BoardRepository extends JpaRepository <Board, Long> {
     """)
     List<BoardResponse.ListDTO> findByMyBoard(@Param("memberId") Long memberId);
 
+
+    // 보드가 Member랑 JOIN 이기에 보드Id로 작성자까지 찾을수 있다.
+    @Query("""
+        SELECT b FROM Board b JOIN FETCH b.member WHERE b.id = :boardId
+    """)
+    Optional<Board> findByIdWithMember(@Param("boardId") Long boardId);
 
 }
