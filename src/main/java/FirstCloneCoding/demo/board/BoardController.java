@@ -1,6 +1,9 @@
 package FirstCloneCoding.demo.board;
 
 
+import FirstCloneCoding.demo.comment.Comment;
+import FirstCloneCoding.demo.comment.CommentResponse;
+import FirstCloneCoding.demo.comment.CommentService;
 import FirstCloneCoding.demo.core.util.Define;
 import FirstCloneCoding.demo.member.Member;
 import FirstCloneCoding.demo.member.Role;
@@ -15,11 +18,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
     // 보드 게시판
 
@@ -53,15 +59,19 @@ public class BoardController {
 
     // 상세 화면
     @GetMapping("/boards/{boardId}")
-    public String boardDetailPage(@PathVariable(name = "boardId") Long boardId, Model model,HttpSession session) {
+    public String boardDetailPage(@PathVariable(name = "boardId") Long boardId, Model model,HttpSession session
+    ) {
 
         Member sessionMember = (Member) session.getAttribute(Define.SESSION_USER);
 //        boardService.increaseViewCount(boardId);
         BoardResponse.DetailDTO board = boardService.detailBoard(boardId);
+
+        List<CommentResponse.ListDTO> comments = commentService.findCommentListByBoardId(boardId,sessionMember.getId());
+
         Long boardOwner = board.getMemberId(); // 해당 보드와 주인이 맞는지 확인
         model.addAttribute("board",board);
         model.addAttribute("isOwner",sessionMember!=null&&boardOwner.equals(sessionMember.getId()));
-        model.addAttribute("comments",null);
+        model.addAttribute("comments",comments);
         return "board/board-detail";
     }
 

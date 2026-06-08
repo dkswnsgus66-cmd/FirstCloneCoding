@@ -38,8 +38,6 @@ public class BoardRequest {
 
                 throw new RuntimeException("내용 입력은 필수 입니다.");
             }
-
-
         }
     }
 

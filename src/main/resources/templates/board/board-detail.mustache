@@ -113,16 +113,16 @@
             </div>
 
             <!-- 댓글 작성 폼 -->
-<!--            <form class="comment-form" action="/boards/{{!board.id}}/comments/save" method="POST">-->
-<!--                <textarea-->
-<!--                    class="comment-textarea"-->
-<!--                    name="content"-->
-<!--                    placeholder="댓글을 입력하세요..."-->
-<!--                ></textarea>-->
-<!--                <div class="comment-form-footer">-->
-<!--                    <button type="submit" class="btn btn-primary btn-sm">등록</button>-->
-<!--                </div>-->
-<!--            </form>-->
+            <form class="comment-form" action="/boards/{{board.id}}/comments/save" method="POST">
+                <textarea
+                    class="comment-textarea"
+                    name="content"
+                    placeholder="댓글을 입력하세요..."
+                ></textarea>
+                <div class="comment-form-footer">
+                    <button type="submit" class="btn btn-primary btn-sm">등록</button>
+                </div>
+            </form>
 
             <!-- 댓글 목록 나중에 작업 -->
             <div class="comment-list">
@@ -138,14 +138,17 @@
                         </div>
                         {{#isOwner}}
                         <div class="comment-actions">
-                            <button class="comment-btn">수정</button>
+                            <form action="/boards/{{board.id}}/comments/{{id}}/edit" method="POST" style="display:inline;">
+                                <button class="comment-btn">수정</button>
+                            </form>
+
                             <form action="/boards/{{board.id}}/comments/{{id}}/delete" method="POST" style="display:inline;">
                                 <button type="submit" class="comment-btn delete">삭제</button>
                             </form>
                         </div>
                         {{/isOwner}}
                     </div>
-                    <div class="comment-content">{{!comment}}</div>
+                    <div class="comment-content">{{comment}}</div>
                 </div>
                 {{/comments}}
 

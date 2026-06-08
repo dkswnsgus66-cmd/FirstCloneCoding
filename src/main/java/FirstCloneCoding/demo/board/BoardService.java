@@ -1,6 +1,8 @@
 package FirstCloneCoding.demo.board;
 
 
+import FirstCloneCoding.demo.comment.Comment;
+import FirstCloneCoding.demo.comment.CommentRepository;
 import FirstCloneCoding.demo.member.Member;
 import FirstCloneCoding.demo.member.MemberRepository;
 import FirstCloneCoding.demo.member.MemberService;
@@ -21,6 +23,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
 
 
     // 제목 검색 기능
@@ -47,6 +50,9 @@ public class BoardService {
         Board boardEntity = boardRepository.findById(boardId).orElseThrow(() ->
                 new IllegalArgumentException("게시글을 찾을수 없습니다.")
         );
+
+        List<Comment> comments = commentRepository.findByBoardId(boardId);
+
 
         return new BoardResponse.DetailDTO(boardEntity);
 

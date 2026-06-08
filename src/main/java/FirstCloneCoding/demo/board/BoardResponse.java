@@ -1,9 +1,11 @@
 package FirstCloneCoding.demo.board;
 
+import FirstCloneCoding.demo.comment.Comment;
 import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class BoardResponse {
 
@@ -42,6 +44,7 @@ public class BoardResponse {
         private String content;
         private Long memberId;
 
+
         public DetailDTO(Board board) {
             this.id = board.getId();
             this.boardType = board.getBoardType();
@@ -51,6 +54,7 @@ public class BoardResponse {
             this.viewCount = board.getViewCount();
             this.content = board.getContent();
             this.memberId = board.getMember().getId();
+
         }
     }
 

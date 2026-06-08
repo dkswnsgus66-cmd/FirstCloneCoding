@@ -29,6 +29,7 @@ public interface BoardRepository extends JpaRepository <Board, Long> {
 
 
 
+
     @Query("""
     SELECT b FROM Board b JOIN FETCH b.member WHERE b.member.id = :memberId
     """)

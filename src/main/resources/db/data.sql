@@ -18,3 +18,12 @@ INSERT INTO board_tb (content, board_type, title, view_count, created_at, is_act
 ('Spring Boot 추천 강의 있으면 알려주세요.', 'FREE', 'Spring 공부 시작했어요', 0, NOW(), true, 2),
 ('결제 관련 문의드립니다.', 'INQUIRY', '결제가 안 돼요', 0, NOW(), true, 3),
 ('비밀번호 변경은 어디서 하나요?', 'INQUIRY', '비밀번호 변경 방법 문의', 0, NOW(), true, 2);
+
+
+-- 댓글 데이터
+INSERT INTO comment_tb (board_id, member_id, content, created_at) VALUES
+(3, 1, '정말 유익한 글이네요!', NOW()),
+(3, 2, '저도 같은 생각입니다.', NOW()),
+(4, 1, '좋은 정보 감사합니다.', NOW()),
+(5, 3, '궁금한 점이 있는데 질문해도 될까요?', NOW()),
+(3, 2, '이 부분은 저도 겪었던 문제예요.', NOW());
