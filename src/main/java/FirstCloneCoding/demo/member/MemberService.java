@@ -1,6 +1,7 @@
 package FirstCloneCoding.demo.member;
 
 
+import FirstCloneCoding.demo.core.exception.NotFoundException;
 import FirstCloneCoding.demo.core.util.Define;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class MemberService {
     public void login(HttpSession session, MemberRequest.LoginDTO loginDTO) {
 
         Member memberEntity = memberRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() ->
-                     new RuntimeException("존재하지 않는 회원 입니다.")
+                     new NotFoundException("존재하지 않는 회원 입니다.")
                 );
         loginDTO.validate();
         session.setAttribute(Define.SESSION_USER,memberEntity);

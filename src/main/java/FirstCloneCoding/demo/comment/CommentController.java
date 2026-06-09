@@ -61,7 +61,9 @@ public class CommentController {
     }
 
 
-    // 댓글 수정
+
+
+    // 댓글 수정  TODO 추후 수정 페이지 정해지면 만들기
     @PostMapping("/boards/{boardId}/comments/{commentId}/edit")
     public String updateComment(CommentRequest.UpdateDTO updateDTO,@PathVariable(name = "boardId") Long boardId, @PathVariable(name = "commentId") Long commentId,HttpSession session) {
 

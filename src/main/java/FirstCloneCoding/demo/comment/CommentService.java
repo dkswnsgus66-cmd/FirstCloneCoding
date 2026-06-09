@@ -2,6 +2,7 @@ package FirstCloneCoding.demo.comment;
 
 import FirstCloneCoding.demo.board.Board;
 import FirstCloneCoding.demo.board.BoardRepository;
+import FirstCloneCoding.demo.core.exception.NotFoundException;
 import FirstCloneCoding.demo.member.Member;
 import FirstCloneCoding.demo.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,11 @@ public class CommentService {
     @Transactional
     public Comment save(CommentRequest.SaveDTO saveDTO, Long memberId) { // 여기는 내가 댓글달 보드 ID
         Board boardEntity = boardRepository.findById(saveDTO.getBoardId()).orElseThrow(() ->
-                new RuntimeException("게시글을 찾을수 없습니다.")
+                new NotFoundException("게시글을 찾을수 없습니다.")
         );
         // id로 사용자 조회
         Member memberEntity = memberRepository.findById(memberId).orElseThrow(() ->
-                new RuntimeException("사용자를 찾을수 없습니다.")
+                new NotFoundException("사용자를 찾을수 없습니다.")
         );
 
         Comment comment = saveDTO.toEntity(memberEntity, boardEntity);
@@ -50,7 +51,7 @@ public class CommentService {
 
         // 내가 쓴 댓글중 수정할 댓글
         Comment commentEntity = commentRepository.findById(commentId).orElseThrow(() ->
-                new RuntimeException("해당 댓글은 존재하지 않습니다.")
+                new NotFoundException("해당 댓글은 존재하지 않습니다.")
         );
 
         commentEntity.setContent(updateDTO.getContent());
@@ -60,7 +61,7 @@ public class CommentService {
     public void delete (Long commentId) {
        // 삭제할려는 댓글
        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
-                new RuntimeException("해당 댓글은 존재하지 않습니다.")
+                new NotFoundException("해당 댓글은 존재하지 않습니다.")
                );
 
        commentRepository.delete(comment);

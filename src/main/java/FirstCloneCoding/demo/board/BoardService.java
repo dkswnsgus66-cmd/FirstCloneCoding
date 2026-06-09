@@ -3,6 +3,7 @@ package FirstCloneCoding.demo.board;
 
 import FirstCloneCoding.demo.comment.Comment;
 import FirstCloneCoding.demo.comment.CommentRepository;
+import FirstCloneCoding.demo.core.exception.NotFoundException;
 import FirstCloneCoding.demo.member.Member;
 import FirstCloneCoding.demo.member.MemberRepository;
 import FirstCloneCoding.demo.member.MemberService;
@@ -48,7 +49,7 @@ public class BoardService {
     public BoardResponse.DetailDTO detailBoard(Long boardId) {
 
         Board boardEntity = boardRepository.findById(boardId).orElseThrow(() ->
-                new IllegalArgumentException("게시글을 찾을수 없습니다.")
+                new NotFoundException("게시글을 찾을수 없습니다.")
         );
 
         List<Comment> comments = commentRepository.findByBoardId(boardId);
@@ -64,7 +65,7 @@ public class BoardService {
     public void boardSave(Member member, BoardRequest.SaveDTO saveDTO) {
 
         Member memberEntity = memberRepository.findById(member.getId()).orElseThrow(() ->
-                new IllegalArgumentException("회원을 찾을수 없습니다.")
+                new NotFoundException("회원을 찾을수 없습니다.")
         );
 
         // 나중에 보드 출력할때 멤버 이름도 출력해야 하기에 member 정보도 넣음
@@ -79,7 +80,7 @@ public class BoardService {
     public BoardResponse.UpdateDTO updatePage(Long boardId) {
 
         Board boardEntity = boardRepository.findById(boardId).orElseThrow(() ->
-                new IllegalArgumentException("해당 게시글을 찾을수 없습니다.")
+                new NotFoundException("해당 게시글을 찾을수 없습니다.")
         );
 
         return new BoardResponse.UpdateDTO(boardEntity);
@@ -89,7 +90,7 @@ public class BoardService {
     public void update(Long boardId, BoardRequest.UpdateDTO updateDTO) {
 
         Board boardEntity = boardRepository.findById(boardId).orElseThrow(() ->
-                new IllegalArgumentException("해당 게시글을 찾을수 없습니다.")
+                new NotFoundException("해당 게시글을 찾을수 없습니다.")
         );
         updateDTO.validate();
         updateDTO.update(boardEntity);
@@ -100,7 +101,7 @@ public class BoardService {
     public void delete(Long memberId, Long boardId) {
 
         Board boardEntity = boardRepository.findById(boardId).orElseThrow(() ->
-                new IllegalArgumentException("해당 게시글을 찾을수 없습니다.")
+                new NotFoundException("해당 게시글을 찾을수 없습니다.")
         );
 
         if (boardEntity.getMember().getId() == memberId) {

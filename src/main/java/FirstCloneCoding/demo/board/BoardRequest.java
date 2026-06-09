@@ -1,5 +1,6 @@
 package FirstCloneCoding.demo.board;
 
+import FirstCloneCoding.demo.core.exception.BadRequestException;
 import FirstCloneCoding.demo.member.Member;
 import lombok.Builder;
 import lombok.Data;
@@ -32,11 +33,11 @@ public class BoardRequest {
         public void validate() {
 
             if (this.title == null || this.title.trim().isEmpty()) {
-                throw new RuntimeException("제목 입력은 필수 입니다.");
+                throw new BadRequestException("제목 입력은 필수 입니다.");
             }
             if (this.content == null || this.content.trim().isEmpty()) {
 
-                throw new RuntimeException("내용 입력은 필수 입니다.");
+                throw new BadRequestException("내용 입력은 필수 입니다.");
             }
         }
     }

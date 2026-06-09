@@ -1,5 +1,6 @@
 package FirstCloneCoding.demo.member;
 
+import FirstCloneCoding.demo.core.exception.BadRequestException;
 import lombok.Data;
 
 public class MemberRequest {
@@ -25,10 +26,10 @@ public class MemberRequest {
 
             if (email == null || email.trim().isEmpty()) {
 
-                throw new RuntimeException("이메일을 입력해 주세요.");
+                throw new BadRequestException("이메일을 입력해 주세요.");
             }
             if (password == null || password.trim().isEmpty()) {
-                throw new RuntimeException("비밀번호를 입력해 주세요");
+                throw new BadRequestException("비밀번호를 입력해 주세요");
             }
 
         }

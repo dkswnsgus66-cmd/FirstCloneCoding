@@ -1,6 +1,7 @@
 package FirstCloneCoding.demo.comment;
 
 import FirstCloneCoding.demo.board.Board;
+import FirstCloneCoding.demo.core.exception.BadRequestException;
 import FirstCloneCoding.demo.member.Member;
 import lombok.Data;
 
@@ -42,7 +43,7 @@ public class CommentRequest {
 
         public void validate() {
             if(this.content == null || this.content.trim().isEmpty()){
-                throw new RuntimeException("내용을 입력해 주세요");
+                throw new BadRequestException("내용을 입력해 주세요");
             }
         }
 
